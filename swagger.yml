@@ -1,0 +1,49 @@
+openapi: 3.0.0
+info:
+  title: "Automation telegram statuses"
+  description: "An API about statuses"
+  version: "1.0.0"
+
+servers:
+  - url: "/api"
+
+components:
+  schemas:
+    Status:
+      type: "object"
+      properties:
+        status_name:
+          type: "string"
+  parameters:
+    status_name:
+      name: "status_name"
+      description: "status_name of the status to get"
+      in: path
+      required: True
+      schema:
+        type: "string"
+        
+paths:
+  /emoji_status:
+    get:
+      operationId: "emoji_status.get_emoji_status"
+      tags:
+        - "emojistatus"
+      summary: "Read the emoji_status"
+      responses:
+        "200":
+          description: "Successfully read emoji_status"
+    put:
+      operationId: "emoji_status.put_emoji_status"
+      tags:
+        - "emojistatus"
+      summary: "Update a emoji_status"
+      responses:
+        "200":
+          description: "Successfully updated emoji_status"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              x-body-name: "status"
+              $ref: "#/components/schemas/Status"
