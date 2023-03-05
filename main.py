@@ -2,10 +2,7 @@ import sys
 
 from telethon.sync import TelegramClient
 from telethon import functions, types
-
-api_id = 29684208
-api_hash = '02439daf6718517e30e4d3a8237c152c'
-session = '/Users/erydannykh/project/tg_status_global/session/session.session'
+from config import api_id, api_hash, session
 
 
 def set_emoji_status(document_id: int):
