@@ -1,4 +1,4 @@
-from telethon.sync import TelegramClient
+from telethon import TelegramClient
 from telethon import functions, types
 from flask import abort
 from config import api_hash, api_id, session
@@ -10,19 +10,23 @@ STATUS = {
     "offline": 5807786710456602258
 }
 
+#loop = asyncio.new_event_loop()
+#asyncio.set_event_loop(loop)
+loop = asyncio.get_event_loop()
+client = TelegramClient(session, api_id, api_hash, loop=loop)
+
 def get_emoji_status():
+    return loop.run_until_complete(_get_emoji_status())
 
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-    client = TelegramClient(session, api_id, api_hash, loop=loop)
+async def _get_emoji_status():
     
-    client.start()
-
-    result = client(functions.users.GetFullUserRequest(
+    await client.start()
+    
+    result = await client(functions.users.GetFullUserRequest(
         id='tinitun'
     ))
 
-    client.disconnect()
+    await client.disconnect()
     document_id = int(result.users[0].emoji_status.document_id)
 
     reverseMap = dict(zip(STATUS.values(), STATUS.keys()))
@@ -31,20 +35,21 @@ def get_emoji_status():
     return {"document_id": str(document_id), "status_name": res}
 
 def put_emoji_status(status):
+        return loop.run_until_complete(_put_emoji_status(status))
+
+async def _put_emoji_status(status):
     status_name = status.get("status_name")
 
     if status_name in STATUS:
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
-        client = TelegramClient(session, api_id, api_hash)
-        client.start()
+        
+        await client.start()
 
-        client(functions.account.UpdateEmojiStatusRequest(
-            emoji_status=types.EmojiStatus(
-                document_id=STATUS[status_name]
+        await client(functions.account.UpdateEmojiStatusRequest(
+            emoji_status = types.EmojiStatus(
+                document_id = STATUS[status_name]
             )
         ))
-        client.disconnect()
+        await client.disconnect()
         return {"status": STATUS[status_name]}
     else:
         abort(404, f"Status with status name {status_name} is not found")
