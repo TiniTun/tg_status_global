@@ -26,6 +26,7 @@ def print_emoji_status(short_name: str):
         ),
         hash=0
     ))
+    client.disconnect()
 
     for pack in result.packs:
         emoticon = pack.emoticon

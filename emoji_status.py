@@ -1,5 +1,6 @@
 from telethon import TelegramClient
 from telethon import functions, types
+from telethon.sessions import StringSession
 from flask import abort
 from config import api_hash, api_id, session
 import asyncio
@@ -13,7 +14,7 @@ STATUS = {
 #loop = asyncio.new_event_loop()
 #asyncio.set_event_loop(loop)
 loop = asyncio.get_event_loop()
-client = TelegramClient(session, api_id, api_hash, loop=loop)
+client = TelegramClient(StringSession(session), api_id, api_hash, loop=loop)
 
 def get_emoji_status():
     return loop.run_until_complete(_get_emoji_status())
